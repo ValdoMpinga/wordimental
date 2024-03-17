@@ -1,0 +1,19 @@
+# Ignore Node.js modules
+node_modules/
+
+# Ignore build output
+build/
+dist/
+coverage/
+
+# Ignore development related files and directories
+*.log
+*.swp
+*.swo
+.DS_Store
+.env
+
+# Ignore any other unnecessary files
+*.bak
+*.tmp
+*.cache
