@@ -40,7 +40,7 @@ function BookAnalysis() {
                         neutral: 0.0,
                     },
                       TextBlob_analysis: {
-                        polarity: -0.19444444444444445,
+                        polarity: 0.19444444444444445,
                         subjectivity: 0.2888888888888889,
                     },
                   },

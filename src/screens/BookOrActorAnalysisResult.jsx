@@ -1,15 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+import { BarChart } from "@mui/x-charts/BarChart";
+import { PieChart } from "@mui/x-charts/PieChart";
 
 const BookOrActorAnalysisResult = () => {
   const location = useLocation();
@@ -19,74 +11,62 @@ const BookOrActorAnalysisResult = () => {
 
   useEffect(() => {
     if (analysisDetails) {
-      // Prepare data for TextBlob analysis
-      const textBlobChartData = [
-        { name: "Polarity", value: analysisDetails.TextBlob_analysis.polarity },
-        {
-          name: "Subjectivity",
-          value: analysisDetails.TextBlob_analysis.subjectivity,
-        },
-      ];
-
-      // Prepare data for NLTK analysis
-      const nltkChartData = [
-        { name: "Positive", value: analysisDetails.NLTK_analysis.positive },
-        { name: "Negative", value: analysisDetails.NLTK_analysis.negative },
-        { name: "Neutral", value: analysisDetails.NLTK_analysis.neutral },
-      ];
-
-      setTextBlobData(textBlobChartData);
-      setNLTKData(nltkChartData);
+      setTextBlobData(generatePieChartData(analysisDetails.TextBlob_analysis));
+      setNLTKData(generateBarChartData(analysisDetails.NLTK_analysis));
     }
   }, [analysisDetails]);
 
-  // Helper function to generate colors for pie chart sectors
-  const getColor = (index) => {
-    const colors = ["#36A2EB", "#FF6384", "#FFCE56"];
-    return colors[index % colors.length];
+  const generatePieChartData = (analysis) => {
+    return Object.entries(analysis).map(([name, value], index) => ({
+      id: index,
+      value,
+      label: name,
+    }));
+  };
+
+  const generateBarChartData = (analysis) => {
+    return Object.entries(analysis).map(([name, value]) => ({
+      name,
+      value,
+    }));
   };
 
   return (
-    <div>
-      <div>
-        {textBlobData && (
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart
-              width={500}
-              height={300}
-              data={textBlobData}
-              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="value" stroke="#8884d8" />
-            </LineChart>
-          </ResponsiveContainer>
-        )}
-      </div>
-      <div>
-        {nltkData && (
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart
-              width={500}
-              height={300}
-              data={nltkData}
-              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="value" stroke="#FF6384" />
-            </LineChart>
-          </ResponsiveContainer>
-        )}
-      </div>
-    </div>
+    <main style={{ display: "flex" }}>
+      {textBlobData && (
+        <div style={{ width: "50%", marginTop: "50px" }}>
+          <PieChart
+            series={[
+              {
+                data: textBlobData,
+              },
+            ]}
+            width={400}
+            height={200}
+          />
+        </div>
+      )}
+      {nltkData && (
+        <div style={{ width: "50%" }}>
+          <BarChart
+            xAxis={[
+              {
+                id: "barCategories",
+                data: nltkData.map((item) => item.name),
+                scaleType: "band",
+              },
+            ]}
+            series={[
+              {
+                data: nltkData.map((item) => item.value),
+              },
+            ]}
+            width={500}
+            height={300}
+          />
+        </div>
+      )}
+    </main>
   );
 };
 
