@@ -27,7 +27,26 @@ function BookAnalysis() {
           <Button
             label="Analyse"
             style={{ marginTop: "108px" }}
-            onClick={() => console.log("Analyse book")}
+            onClick={() => {
+              console.log("Analysing books...");
+              navigate("/book-or-actor-analysis-retsult", {
+                state: {
+                  analysisDetails: {
+                    author: "John Doe",
+                    title: "lorem Ipsum",
+                      NLTK_analysis: {
+                        positive: 0.0,
+                        negative: 100.0,
+                        neutral: 0.0,
+                    },
+                      TextBlob_analysis: {
+                        polarity: -0.19444444444444445,
+                        subjectivity: 0.2888888888888889,
+                    },
+                  },
+                },
+              });
+            }}
           />
         </div>
         <div style={styles.separator} />
@@ -67,9 +86,9 @@ const styles = {
     justifyContent: "space-between",
     maxWidth: "1000px",
     margin: "0 auto",
-    marginTop: "80px"
+    marginTop: "80px",
   },
-    bookDetails: {
+  bookDetails: {
     backgroundColor: colors.highlight,
     padding: "20px",
     borderRadius: "8px",
@@ -89,7 +108,7 @@ const styles = {
   },
   separator: {
     width: "2px",
-    backgroundColor: colors.text, 
+    backgroundColor: colors.text,
     alignSelf: "stretch",
   },
   input: {
