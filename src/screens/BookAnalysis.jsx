@@ -13,10 +13,16 @@ function BookAnalysis() {
   const bookDetails = location.state.bookDetails;
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [actorName, setActorName] = useState("");
+  const [compareBookId, setCompareBookId] = useState(null);
+
+  const handleInputChange = (event) => {
+    setActorName(event.target.value);
+  };
 
   const handleBookAnalysis = async () => {
     try {
-      setLoading(true); 
+      setLoading(true);
       const response = await fetch(
         "http://localhost:8000/sentiment-analyser/analyse-book/",
         {
@@ -24,23 +30,21 @@ function BookAnalysis() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ id: bookDetails.bookId }), 
+          body: JSON.stringify({ id: bookDetails.bookId }),
         }
       );
       const data = await response.json();
 
-
       navigate("/book-or-actor-analysis-retsult", {
-        state: { analysisDetails:  data  },
+        state: { analysisDetails: data },
       });
-
 
       // navigate("/book-or-actor-analysis-retsult", {
       //   state: {
       //     analysisDetails: {
       //       title: "lorem Ipsum",
       //       authors: "John Doe",
-      //       NLTK_analysis: {
+      //       NLKT_analysis: {
       //         pos: 0.0,
       //         neg: 100.0,
       //         neu: 0.0,
@@ -56,7 +60,99 @@ function BookAnalysis() {
     } catch (error) {
       console.error("Error analyzing book:", error);
     } finally {
-      setLoading(false); 
+      setLoading(false);
+    }
+  };
+
+  const handleActorAnalysis = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        "http://localhost:8000/sentiment-analyser/actor-sentiment-analyser/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: bookDetails.bookId,
+            character: actorName,
+          }),
+        }
+      );
+      const data = await response.json();
+
+      console.log(data);
+
+      navigate("/book-or-actor-analysis-retsult", {
+        state: { analysisDetails: data },
+      });
+    } catch (error) {
+      console.error("Error analyzing book:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearchButton = async (bookName) => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        "http://localhost:8000/sentiment-analyser/get-book-id/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: bookName,
+          }),
+        }
+      );
+      const data = await response.json();
+
+      if (data.id) {
+        console.log("Selected book for comparison id " + data);
+
+        setCompareBookId(data.id);
+        alert("Book exists, please click the compare button to proceed.");
+      } else {
+        alert("Book doesnt exists!");
+      }
+    } catch (error) {
+      console.error("Error analyzing book:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCompareBookButton = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        "http://localhost:8000/sentiment-analyser/compare-books/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id1: bookDetails.bookId,
+            id2: compareBookId,
+          }),
+        }
+      );
+      const data = await response.json();
+      // console.log(data);
+      navigate("/book-comparison-result", {
+        state: {
+          analysisDetails: { data },
+        },
+      });
+    } catch (error) {
+      console.error("Error analyzing book:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -93,59 +189,36 @@ function BookAnalysis() {
             <h2 style={styles.subtitle}>Analyse Actor</h2>
             <input
               type="text"
+              onChange={handleInputChange}
               placeholder="Enter actor name"
               style={styles.input}
             />
             <Button
               label="Analyse"
               style={{ marginTop: "50px" }}
-              onClick={() => console.log("Analyse actor")}
+              onClick={() => {
+                handleActorAnalysis();
+              }}
             />
           </div>
           <div style={styles.separator} />
           <div style={styles.column}>
             <h2 style={styles.subtitle}>Compare with</h2>
             <div style={styles.searchBar}>
-              <SearchBar onSearch={(query) => console.log("Search:", query)} />
+              <SearchBar
+                onSearch={(query) => {
+                  console.log("Search:", query);
+                  handleSearchButton(query);
+                }}
+              />
             </div>
             <Button
               label="Compare"
               style={{ marginTop: "30px" }}
               onClick={() => {
-                console.log("Analysing books...");
-                navigate("/book-comparison-result", {
-                  state: {
-                    analysisDetails: {
-                      book1: {
-                        author: "John Doe",
-                        title: "lorem Ipsum",
-                        NLTK_analysis: {
-                          positive: 0.0,
-                          negative: 100.0,
-                          neutral: 0.0,
-                        },
-                        TextBlob_analysis: {
-                          polarity: 0.19444444444444445,
-                          subjectivity: 0.2888888888888889,
-                        },
-                      },
-                      book2: {
-                        author: "Balzac, Honoré de",
-                        title: "Ursula",
-                        NLTK_analysis: {
-                          positive: 0.124,
-                          negative: 0.66,
-                          neutral: 0.211,
-                        },
-                        TextBlob_analysis: {
-                          polarity: 0.10446607204135443,
-                          subjectivity: 0.4895505824932801,
-                        },
-                      },
-                    },
-                  },
-                });
-                console.log("Compare");
+                console.log("Comparing books...");
+
+                handleCompareBookButton();
               }}
             />
           </div>

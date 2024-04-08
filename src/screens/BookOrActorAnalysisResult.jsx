@@ -9,16 +9,28 @@ const BookOrActorAnalysisResult = () => {
   const location = useLocation();
   const analysisDetails = location.state?.analysisDetails;
   const [textBlobData, setTextBlobData] = useState(null);
-  const [NLKTData, setNLKTData] = useState(null);
+  const [NLTKData, setNLTKData] = useState(null);
+  const [character, setCharacter] = useState(null);
 
   useEffect(() => {
-    if (analysisDetails)
-    {
-      console.log(analysisDetails);
-      console.log(analysisDetails.TextBlob_analysis);
-      console.log(analysisDetails.NLKT_analysis);
-      setTextBlobData(generatePieChartData(analysisDetails.TextBlob_analysis));
-      setNLKTData(generateBarChartData(analysisDetails.NLKT_analysis));
+    if (analysisDetails) {
+      if (analysisDetails.sentiment_analysis)
+      {
+        setCharacter(analysisDetails.character);
+        setTextBlobData(
+          generatePieChartData(
+            analysisDetails.sentiment_analysis.TextBlob_analysis
+          )
+        );
+        setNLTKData(
+          generateBarChartData(analysisDetails.sentiment_analysis.NLTK_analysis)
+        );
+      } else {
+        setTextBlobData(
+          generatePieChartData(analysisDetails.TextBlob_analysis)
+        );
+        setNLTKData(generateBarChartData(analysisDetails.NLTK_analysis));
+      }
     }
   }, [analysisDetails]);
 
@@ -38,7 +50,7 @@ const BookOrActorAnalysisResult = () => {
   };
 
   if (!analysisDetails) {
-    return <div>Loading...</div>; // Render a loading indicator if analysisDetails is null or undefined
+    return <div>Loading...</div>; 
   }
 
   return (
@@ -48,7 +60,7 @@ const BookOrActorAnalysisResult = () => {
         title={analysisDetails.title}
         author={analysisDetails.authors}
         bgColor={colors.secundary}
-        personagemAvaliado={"OG guy"}
+        personagemAvaliado={character}
       />
       <div
         style={{ display: "flex", justifyContent: "center", marginTop: "50px" }}
@@ -60,10 +72,10 @@ const BookOrActorAnalysisResult = () => {
             chartType="pie"
           />
         )}
-        {NLKTData && (
+        {NLTKData && (
           <ChartContainer
-            title={`NLKT Analysis - ${analysisDetails.title}`}
-            chartData={NLKTData}
+            title={`NLTK Analysis - ${analysisDetails.title}`}
+            chartData={NLTKData}
             chartType="bar"
           />
         )}

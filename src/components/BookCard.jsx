@@ -22,16 +22,16 @@ const styles = {
     backgroundColor: colors.primary,
     padding: "20px",
     borderRadius: "5px",
-    boxShadow: "0 4px 8px rgba(0,0,0,0.2)", // Enhanced shadow effect
+    boxShadow: "0 4px 8px rgba(0,0,0,0.2)", 
     marginBottom: "20px",
-    width: "100%", // Adjusted width for responsiveness
+    width: "100%", 
     boxSizing: "border-box",
-    height: "auto", // Adjusted height for responsiveness
+    height: "auto",
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    transition: "transform 0.3s ease", // Added animation transition
-    cursor: "pointer", // Added cursor pointer for better usability
+    transition: "transform 0.3s ease",
+    cursor: "pointer", 
   },
   content: {
     textAlign: "center",
@@ -55,10 +55,10 @@ const styles = {
     backgroundColor: colors.background,
     color: colors.text,
     cursor: "pointer",
-    transition: "background-color 0.3s ease", // Added transition for button hover effect
+    transition: "background-color 0.3s ease",
   },
   cardHover: {
-    transform: "scale(1.05)", // Enlarges the card on hover
+    transform: "scale(1.05)",
   },
 };
 

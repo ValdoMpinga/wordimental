@@ -9,7 +9,8 @@ function BookComparisonResult() {
   const analysisDetails = location.state?.analysisDetails;
 
   useEffect(() => {
-    console.log(analysisDetails);
+    console.log("Inside comparison display");
+    console.log(analysisDetails.data);
   }, [analysisDetails]);
 
   const generateChartData = (analysis) => {
@@ -41,23 +42,23 @@ function BookComparisonResult() {
         {analysisDetails && (
           <>
             <ChartContainer
-              title={`NLTK Analysis - ${analysisDetails.book1.title}`}
-              chartData={generateChartData(analysisDetails.book1).NLTK}
+              title={`NLTK Analysis - ${analysisDetails.data.book1.title}`}
+              chartData={generateChartData(analysisDetails.data.book1).NLTK}
               chartType="bar"
             />
             <ChartContainer
-              title={`TextBlob Analysis - ${analysisDetails.book1.title}`}
-              chartData={generateChartData(analysisDetails.book1).TextBlob}
+              title={`TextBlob Analysis - ${analysisDetails.data.book1.title}`}
+              chartData={generateChartData(analysisDetails.data.book1).TextBlob}
               chartType="pie"
             />
             <ChartContainer
-              title={`NLTK Analysis - ${analysisDetails.book2.title}`}
-              chartData={generateChartData(analysisDetails.book2).NLTK}
+              title={`NLTK Analysis - ${analysisDetails.data.book2.title}`}
+              chartData={generateChartData(analysisDetails.data.book2).NLTK}
               chartType="bar"
             />
             <ChartContainer
-              title={`TextBlob Analysis - ${analysisDetails.book2.title}`}
-              chartData={generateChartData(analysisDetails.book2).TextBlob}
+              title={`TextBlob Analysis - ${analysisDetails.data.book2.title}`}
+              chartData={generateChartData(analysisDetails.data.book2).TextBlob}
               chartType="pie"
             />
           </>
