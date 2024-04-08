@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { colors } from "../utils/contants";
 
-const SearchBar = ({ onSearch }) => {
-  const [query, setQuery] = useState("");
+const SearchBar = ({ searchQuery, setSearchQuery, onSearch }) => {
 
   const handleInputChange = (event) => {
-    setQuery(event.target.value);
+    setSearchQuery(event.target.value);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onSearch(query);
+    onSearch(searchQuery);
   };
 
   return (
@@ -18,7 +17,7 @@ const SearchBar = ({ onSearch }) => {
       <input
         type="text"
         placeholder="Search..."
-        value={query}
+        value={searchQuery}
         onChange={handleInputChange}
         style={styles.input}
       />

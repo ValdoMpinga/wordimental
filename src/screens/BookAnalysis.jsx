@@ -17,6 +17,7 @@ function BookAnalysis() {
   const [compareBookId, setCompareBookId] = useState(null);
   const [loadingText, setLoadingText] = useState(null);
   const [comparabeButtonDisabled, setCompareButtonDisabled] = useState(true);
+  const [searchQuery, setSearchQuery] = useState(""); 
 
   const handleInputChange = (event) => {
     setActorName(event.target.value);
@@ -123,6 +124,9 @@ function BookAnalysis() {
       setLoading(true);
       setLoadingText("Comparing books...");
 
+      console.log(bookDetails.bookId);
+      console.log(compareBookId);
+
       const response = await fetch(
         "http://localhost:8000/sentiment-analyser/compare-books/",
         {
@@ -137,7 +141,7 @@ function BookAnalysis() {
         }
       );
       const data = await response.json();
-      // console.log(data);
+      console.log(data);
       navigate("/book-comparison-result", {
         state: {
           analysisDetails: { data },
@@ -202,6 +206,8 @@ function BookAnalysis() {
             <h2 style={styles.subtitle}>Compare with</h2>
             <div style={styles.searchBar}>
               <SearchBar
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
                 onSearch={(query) => {
                   console.log("Search:", query);
                   handleSearchButton(query);
