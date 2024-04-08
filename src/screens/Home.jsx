@@ -4,7 +4,7 @@ import "../styles/global.css";
 import SearchBar from "../components/SearchBar";
 import BookCard from "../components/BookCard";
 import { useNavigate } from "react-router-dom";
-import { ClipLoader } from "react-spinners";
+import { CircleLoader } from "react-spinners";
 
 function Home() {
   const navigate = useNavigate();
@@ -34,15 +34,11 @@ function Home() {
   return (
     <main style={styles.container}>
       <Header title={"Book sentiment analyser"} />
-      <SearchBar
-        onSearch={() => {
-          console.log("Searching...");
-        }}
-      />
-      {loading ? ( 
+
+      {loading ? (
         <div style={styles.spinnerContainer}>
-          <ClipLoader color="#36D7B7" loading={loading} size={50} />
-          <p>Loading Books</p>
+          <CircleLoader color="#36D7B7" loading={loading} size={50} />
+          <h2 style={{ marginTop: "20px" }}>Loading Books...</h2>
         </div>
       ) : (
         <div style={styles.cardContainer}>
@@ -74,15 +70,15 @@ function Home() {
 
 const styles = {
   container: {
-    maxWidth: "1200px", // Limiting container width for better readability
-    margin: "0 auto", // Centering the content horizontally
+    maxWidth: "1200px", 
+    margin: "0 auto", 
     padding: "20px",
   },
   cardContainer: {
     display: "flex",
-    flexWrap: "wrap", // Allows cards to wrap to the next row
-    justifyContent: "space-between", // Distribute space between cards
-    gap: "20px", // Margin between cards
+    flexWrap: "wrap",
+    justifyContent: "space-between", 
+    gap: "20px", 
   },
   spinnerContainer: {
     display: "flex",

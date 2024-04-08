@@ -7,15 +7,17 @@ const ChartContainer = ({ title, chartData, chartType }) => {
     <div style={{ marginRight: "20px", textAlign: "center" }}>
       <h2>{title}</h2>
       {chartType === "pie" && (
-        <PieChart
-          series={[
-            {
-              data: chartData,
-            },
-          ]}
-          width={400}
-          height={200}
-        />
+        <div style={{ marginTop: "45px" }}>
+          <PieChart
+            series={[
+              {
+                data: chartData,
+              },
+            ]}
+            width={400}
+            height={200}
+          />
+        </div>
       )}
       {chartType === "bar" && (
         <BarChart

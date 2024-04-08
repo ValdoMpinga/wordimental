@@ -6,7 +6,7 @@ import SearchBar from "../components/SearchBar";
 import Button from "../components/Button";
 import BookDetailsCard from "../components/BookDetailsCard";
 import { useNavigate } from "react-router-dom";
-import { ClipLoader } from "react-spinners";
+import { CircleLoader } from "react-spinners";
 
 function BookAnalysis() {
   const location = useLocation();
@@ -15,6 +15,8 @@ function BookAnalysis() {
   const [loading, setLoading] = useState(false);
   const [actorName, setActorName] = useState("");
   const [compareBookId, setCompareBookId] = useState(null);
+  const [loadingText, setLoadingText] = useState(null);
+  const [comparabeButtonDisabled, setCompareButtonDisabled] = useState(true);
 
   const handleInputChange = (event) => {
     setActorName(event.target.value);
@@ -23,6 +25,7 @@ function BookAnalysis() {
   const handleBookAnalysis = async () => {
     try {
       setLoading(true);
+      setLoadingText("Analysing book...");
       const response = await fetch(
         "http://localhost:8000/sentiment-analyser/analyse-book/",
         {
@@ -38,35 +41,19 @@ function BookAnalysis() {
       navigate("/book-or-actor-analysis-retsult", {
         state: { analysisDetails: data },
       });
-
-      // navigate("/book-or-actor-analysis-retsult", {
-      //   state: {
-      //     analysisDetails: {
-      //       title: "lorem Ipsum",
-      //       authors: "John Doe",
-      //       NLKT_analysis: {
-      //         pos: 0.0,
-      //         neg: 100.0,
-      //         neu: 0.0,
-      //         com:0.60
-      //       },
-      //       TextBlob_analysis: {
-      //         polarity: 0.19444444444444445,
-      //         subjectivity: 0.2888888888888889,
-      //       },
-      //     },
-      //   },
-      // });
     } catch (error) {
       console.error("Error analyzing book:", error);
     } finally {
       setLoading(false);
+      setLoadingText(null);
     }
   };
 
   const handleActorAnalysis = async () => {
     try {
       setLoading(true);
+      setLoadingText("Analysing book actor");
+
       const response = await fetch(
         "http://localhost:8000/sentiment-analyser/actor-sentiment-analyser/",
         {
@@ -91,12 +78,15 @@ function BookAnalysis() {
       console.error("Error analyzing book:", error);
     } finally {
       setLoading(false);
+      setLoadingText(null);
     }
   };
 
   const handleSearchButton = async (bookName) => {
     try {
       setLoading(true);
+      setLoadingText("Checking if book exists in the database...");
+
       const response = await fetch(
         "http://localhost:8000/sentiment-analyser/get-book-id/",
         {
@@ -114,6 +104,7 @@ function BookAnalysis() {
       if (data.id) {
         console.log("Selected book for comparison id " + data);
 
+        setCompareButtonDisabled(false);
         setCompareBookId(data.id);
         alert("Book exists, please click the compare button to proceed.");
       } else {
@@ -123,12 +114,15 @@ function BookAnalysis() {
       console.error("Error analyzing book:", error);
     } finally {
       setLoading(false);
+      setLoadingText(false);
     }
   };
 
   const handleCompareBookButton = async () => {
     try {
       setLoading(true);
+      setLoadingText("Comparing books...");
+
       const response = await fetch(
         "http://localhost:8000/sentiment-analyser/compare-books/",
         {
@@ -153,6 +147,8 @@ function BookAnalysis() {
       console.error("Error analyzing book:", error);
     } finally {
       setLoading(false);
+      setLoadingText(null);
+      setCompareButtonDisabled(true);
     }
   };
 
@@ -166,8 +162,8 @@ function BookAnalysis() {
       />
       {loading ? (
         <div style={styles.spinnerContainer}>
-          <ClipLoader color="#36D7B7" loading={loading} size={50} />
-          <p>Loading Books</p>
+          <CircleLoader color="#36D7B7" loading={loading} size={50} />
+          <h2 style={{ marginTop: "20px" }}>{loadingText}</h2>
         </div>
       ) : (
         <div style={styles.container}>
@@ -217,9 +213,9 @@ function BookAnalysis() {
               style={{ marginTop: "30px" }}
               onClick={() => {
                 console.log("Comparing books...");
-
                 handleCompareBookButton();
               }}
+              disabled={comparabeButtonDisabled}
             />
           </div>
         </div>
