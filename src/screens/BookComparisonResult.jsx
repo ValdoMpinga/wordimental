@@ -30,7 +30,7 @@ function BookComparisonResult() {
   const generateBarChartData = (analysis) => {
     return Object.entries(analysis).map(([name, value]) => ({
       name,
-      value,
+      value: value *100,
     }));
   };
 
